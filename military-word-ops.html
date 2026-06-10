@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ 战术词汇指挥部 | TACTICAL WORD COMMAND</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+
+  :root {
+    --bg-deep: #0d1110;
+    --bg-panel: #141c16;
+    --green-dark: #1a2e1a;
+    --green-mid: #2d4a2d;
+    --green-field: #3e5c3a;
+    --olive: #5a6340;
+    --khaki: #8b7d5e;
+    --brass: #c4943a;
+    --brass-light: #d4a84b;
+    --red-tac: #c0392b;
+    --text-primary: #d4d9c7;
+    --text-secondary: #8a9580;
+    --text-bright: #e8eddf;
+    --border-tac: #2e3d2e;
+    --glow-green: rgba(75, 140, 60, 0.5);
+    --glow-brass: rgba(196, 148, 58, 0.4);
+    --font-tactical: 'Rajdhani', 'Share Tech Mono', monospace;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg-deep);
+    min-height: 100vh;
+    position: relative;
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* 迷彩纹理背景 */
+  body::before {
+    content: '';
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background:
+      radial-gradient(ellipse at 10% 20%, rgba(45,74,45,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 60%, rgba(58,80,45,0.2) 0%, transparent 45%),
+      radial-gradient(ellipse at 40% 85%, rgba(35,55,30,0.3) 0%, transparent 50%),
+      radial-gradient(circle at 60% 15%, rgba(45,65,35,0.15) 0%, transparent 40%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 4px,
+        rgba(255,255,255,0.008) 4px,
+        rgba(255,255,255,0.008) 8px
+      ),
+      repeating-linear-gradient(
+        -35deg,
+        transparent,
+        transparent 6px,
+        rgba(0,0,0,0.04) 6px,
+        rgba(0,0,0,0.04) 12px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 扫描线效果 */
+  body::after {
+    content: '';
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .app-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 12px 20px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === 顶部横幅 === */
+  .top-banner {
+    background: linear-gradient(180deg, rgba(20,28,22,0.98) 0%, rgba(25,36,25,0.95) 100%);
+    border: 2px solid var(--border-tac);
+    border-image: linear-gradient(135deg, var(--green-mid), var(--olive), var(--green-mid)) 1;
+    padding: 14px 28px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: relative;
+    clip-path: polygon(
+      0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%,
+      30px 100%, 0 calc(100% - 30px)
+    );
+  }
+
+  .top-banner::before {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px; right: 2px; bottom: 2px;
+    border: 1px solid rgba(90,99,64,0.2);
+    clip-path: inherit;
+    pointer-events: none;
+  }
+
+  .rank-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .rank-stars {
+    font-size: 1.4rem;
+    letter-spacing: -3px;
+    color: var(--brass);
+    filter: drop-shadow(0 0 6px var(--glow-brass));
+  }
+
+  .unit-title h1 {
+    font-family: var(--font-tactical);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(100,160,80,0.3);
+  }
+
+  .unit-title .subtitle {
+    font-family: var(--font-tactical);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    letter-spacing: 6px;
+    margin-top: 2px;
+  }
+
+  .tactical-time {
+    font-family: var(--font-tactical);
+    font-size: 0.95rem;
+    color: var(--brass-light);
+    background: rgba(0,0,0,0.4);
+    padding: 6px 16px;
+    border: 1px solid var(--border-tac);
+    letter-spacing: 3px;
+  }
+
+  /* === 模式切换 === */
+  .ops-mode-bar {
+    background: linear-gradient(180deg, rgba(22,28,20,0.95), rgba(28,36,24,0.9));
+    border: 1px solid var(--border-tac);
+    padding: 10px 20px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+  }
+
+  .mode-label {
+    font-family: var(--font-tactical);
+    color: var(--text-secondary);
+    letter-spacing: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    margin-right: 8px;
+  }
+
+  .mode-btn {
+    font-family: var(--font-tactical);
+    border: 1px solid var(--border-tac);
+    background: rgba(20,30,20,0.8);
+    color: var(--text-secondary);
+    padding: 9px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    text-transform: uppercase;
+  }
+
+  .mode-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 12px; right: 12px;
+    height: 2px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+
+  .mode-btn:hover {
+    border-color: var(--olive);
+    color: var(--text-bright);
+    background: rgba(45,55,35,0.6);
+  }
+
+  .mode-btn.active {
+    background: linear-gradient(180deg, var(--green-mid), var(--green-dark));
+    color: var(--brass-light);
+    border-color: var(--green-field);
+    box-shadow: 0 0 20px var(--glow-green), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .mode-btn.active::after {
+    background: var(--brass);
+  }
+
+  .ammo-indicator {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .ammo-dot {
+    width: 6px; height: 6px;
+    background: var(--brass-light);
+    border-radius: 0;
+    animation: ammoPulse 2s infinite;
+  }
+
+  .ammo-dot:nth-child(2) { animation-delay: 0.3s; }
+  .ammo-dot:nth-child(3) { animation-delay: 0.6s; }
+
+  @keyframes ammoPulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* === 主布局 === */
+  .main-layout {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  /* === 侧边栏 === */
+  .intel-sidebar {
+    flex: 0 0 240px;
+    min-width: 220px;
+    background: linear-gradient(180deg, rgba(18,26,18,0.98), rgba(22,32,20,0.95));
+    border: 1px solid var(--border-tac);
+    padding: 18px 10px;
+    max-height: 70vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .intel-sidebar::before {
+    content: 'INTEL BRIEF';
+    display: block;
+    font-family: var(--font-tactical);
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    letter-spacing: 6px;
+    text-align: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-tac);
+    margin-bottom: 14px;
+  }
+
+  .intel-sidebar h3 {
+    font-family: var(--font-tactical);
+    font-size: 0.9rem;
+    color: var(--brass-light);
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--green-field);
+    text-transform: uppercase;
+  }
+
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .cat-item {
+    background: rgba(15,25,15,0.7);
+    border: 1px solid rgba(46,61,46,0.6);
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-tactical);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .cat-item .count-badge {
+    background: rgba(0,0,0,0.5);
+    padding: 2px 8px;
+    font-size: 0.65rem;
+    border: 1px solid var(--border-tac);
+    color: var(--text-secondary);
+  }
+
+  .cat-item:hover {
+    border-color: var(--olive);
+    color: var(--text-bright);
+    background: rgba(40,55,35,0.7);
+    transform: translateX(3px);
+  }
+
+  .cat-item.active {
+    background: var(--green-dark);
+    border-color: var(--green-field);
+    color: var(--brass-light);
+    box-shadow: 0 0 15px var(--glow-green);
+  }
+
+  .cat-item.active::before {
+    content: '▶';
+    position: absolute;
+    left: -10px;
+    color: var(--brass);
+    font-size: 0.5rem;
+  }
+
+  .cat-item.active .count-badge {
+    border-color: var(--green-field);
+    color: var(--brass-light);
+  }
+
+  /* === 内容区 === */
+  .content-area {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  /* === 单词卡片网格 === */
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    max-height: 64vh;
+    overflow-y: auto;
+    padding: 4px;
+  }
+
+  .word-card {
+    background: linear-gradient(180deg, rgba(22,32,20,0.95), rgba(18,26,16,0.98));
+    border: 1px solid var(--border-tac);
+    padding: 18px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(
+      6px 0, 100% 0, 100% calc(100% - 6px),
+      calc(100% - 6px) 100%, 0 100%, 0 6px
+    );
+  }
+
+  .word-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(75,140,60,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .word-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--green-field);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 20px var(--glow-green);
+  }
+
+  .word-card:hover::before {
+    opacity: 1;
+  }
+
+  .word-card .tac-code {
+    font-family: var(--font-tactical);
+    font-size: 0.55rem;
+    color: var(--text-secondary);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  .word-card .en {
+    font-family: var(--font-tactical);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(200,220,180,0.2);
+  }
+
+  .word-card .zh {
+    margin-top: 10px;
+    color: var(--brass-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-top: 1px solid rgba(46,61,46,0.5);
+    padding-top: 8px;
+    letter-spacing: 2px;
+  }
+
+  .word-card .comms {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+
+  /* === 挑战面板 === */
+  .ops-panel {
+    background: linear-gradient(180deg, rgba(20,30,20,0.97), rgba(16,24,16,0.98));
+    border: 1px solid var(--border-tac);
+    padding: 24px;
+    position: relative;
+  }
+
+  .ops-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-field), transparent);
+  }
+
+  .level-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .level-btn {
+    font-family: var(--font-tactical);
+    background: rgba(20,30,20,0.8);
+    border: 1px solid var(--border-tac);
+    color: var(--text-secondary);
+    padding: 12px 22px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+
+  .level-btn:hover {
+    border-color: var(--olive);
+    color: var(--text-bright);
+    background: rgba(40,55,35,0.6);
+  }
+
+  .level-btn.active-level {
+    background: var(--green-mid);
+    color: var(--brass-light);
+    border-color: var(--green-field);
+    box-shadow: 0 0 20px var(--glow-green);
+    text-shadow: 0 0 10px rgba(196,148,58,0.4);
+  }
+
+  .mission-board {
+    background: rgba(15,22,15,0.8);
+    border: 1px solid var(--border-tac);
+    padding: 28px 20px;
+    text-align: center;
+  }
+
+  .mission-title {
+    font-family: var(--font-tactical);
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    letter-spacing: 8px;
+    margin-bottom: 16px;
+  }
+
+  .question-text {
+    font-family: var(--font-tactical);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    display: inline-block;
+    padding: 14px 28px;
+    background: rgba(30,45,28,0.8);
+    border: 1px solid var(--border-tac);
+    margin: 14px 0;
+    letter-spacing: 2px;
+  }
+
+  .question-text em {
+    color: var(--brass-light);
+    font-style: normal;
+  }
+
+  .options-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .option-btn {
+    font-family: var(--font-tactical);
+    background: rgba(18,28,18,0.9);
+    border: 1px solid var(--border-tac);
+    color: var(--text-primary);
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn:hover {
+    border-color: var(--green-field);
+    background: rgba(40,55,35,0.7);
+    color: var(--text-bright);
+    box-shadow: 0 0 15px var(--glow-green);
+  }
+
+  .option-btn:active {
+    transform: scale(0.96);
+  }
+
+  .input-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px auto;
+  }
+
+  .answer-input {
+    font-family: var(--font-tactical);
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: 1px solid var(--border-tac);
+    background: rgba(10,18,10,0.9);
+    color: var(--text-bright);
+    width: 260px;
+    text-align: center;
+    outline: none;
+    letter-spacing: 2px;
+    transition: border-color 0.3s;
+  }
+
+  .answer-input:focus {
+    border-color: var(--green-field);
+    box-shadow: 0 0 15px var(--glow-green);
+  }
+
+  .answer-input::placeholder {
+    color: rgba(138,149,128,0.4);
+  }
+
+  .action-btn {
+    font-family: var(--font-tactical);
+    background: var(--green-mid);
+    border: 1px solid var(--green-field);
+    color: var(--text-bright);
+    padding: 10px 28px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .action-btn:hover {
+    background: var(--green-field);
+    border-color: var(--olive);
+    box-shadow: 0 0 20px var(--glow-green);
+  }
+
+  .action-btn:active {
+    transform: scale(0.96);
+  }
+
+  .action-btn.record-btn {
+    background: var(--red-tac);
+    border-color: #a93226;
+  }
+
+  .action-btn.record-btn:hover {
+    box-shadow: 0 0 20px rgba(192,57,43,0.5);
+  }
+
+  .feedback {
+    font-family: var(--font-tactical);
+    font-size: 1rem;
+    margin: 14px 0;
+    min-height: 55px;
+    letter-spacing: 2px;
+    color: var(--text-bright);
+  }
+
+  .score-area {
+    background: rgba(20,30,15,0.8);
+    border: 1px solid var(--border-tac);
+    padding: 4px 16px;
+    font-family: var(--font-tactical);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--brass-light);
+  }
+
+  .score-area.warning {
+    border-color: var(--red-tac);
+    color: #e74c3c;
+  }
+
+  /* === 结果页 === */
+  .mission-complete {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .mission-complete .rank-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+
+  .mission-complete h2 {
+    font-family: var(--font-tactical);
+    font-size: 1.6rem;
+    color: var(--brass-light);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+
+  .mission-complete .score-display {
+    font-family: var(--font-tactical);
+    font-size: 2rem;
+    color: var(--text-bright);
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+  }
+
+  /* === 页脚 === */
+  footer {
+    text-align: center;
+    margin-top: 24px;
+    padding: 12px;
+    font-family: var(--font-tactical);
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    letter-spacing: 4px;
+    border-top: 1px solid var(--border-tac);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === 滚动条 === */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--green-dark);
+    border: 1px solid var(--border-tac);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
+
+  /* === 响应式 === */
+  @media (max-width: 768px) {
+    .main-layout { flex-direction: column; }
+    .intel-sidebar { flex: auto; max-height: 30vh; min-width: auto; }
+    .top-banner { clip-path: none; padding: 12px 16px; }
+    .unit-title h1 { font-size: 1.3rem; letter-spacing: 2px; }
+    .word-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<div class="app-container">
+  <!-- 顶部横幅 -->
+  <div class="top-banner">
+    <div class="rank-badge">
+      <span class="rank-stars">✪✪✪</span>
+      <div class="unit-title">
+        <h1>TACTICAL WORD COMMAND</h1>
+        <div class="subtitle">⚔ 战术词汇指挥部 · 五级作战训练系统</div>
+      </div>
+    </div>
+    <div class="tactical-time" id="tacClock">COMSTAT 0000 ZULU</div>
+  </div>
+
+  <!-- 模式切换栏 -->
+  <div class="ops-mode-bar">
+    <span class="mode-label">▸ OP MODE</span>
+    <button class="mode-btn active" data-mode="browse">📋 情报阅览</button>
+    <button class="mode-btn" data-mode="challenge">🎯 作战任务</button>
+    <div class="ammo-indicator">
+      <span style="font-family:var(--font-tactical);color:var(--text-secondary);font-size:0.6rem;letter-spacing:2px;">SYS-OK</span>
+      <span class="ammo-dot"></span>
+      <span class="ammo-dot"></span>
+      <span class="ammo-dot"></span>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-layout">
+    <div class="intel-sidebar">
+      <h3>📡 情报分类</h3>
+      <div id="categoryList" class="cat-list">载入情报中...</div>
+    </div>
+    <div class="content-area">
+      <div id="dynamicContent"></div>
+    </div>
+  </div>
+
+  <footer>
+    ⚡ TACTICAL WORD COMMAND v2.0 — CLASSIFIED TRAINING SYSTEM — STAND BY ⚡
+  </footer>
+</div>
+
+<script>
+// ======================= 完整分类数据 =======================
+const categoriesData = {
+    "👥 人员编制": ["aunt","brother","cousin","couple","dad","daughter","family","father","grandchild","granddaughter","grandfather","grandma","grandmother","grandpa","grandparent","grandson","granny","husband","mom","mother","parent","relation","sister","son","uncle","wife","adult","baby","boy","child","classmate","elder","enemy","friend","gentleman","girl","guest","hero","human","kid","lady","madam","man","member","Miss","Mr.","Mrs.","neighbor","nobody","officer","owner","patient","person","pioneer","passenger","people","prisoner","public","sir","stranger","teenager","tourist","visitor","volunteer","winner","woman"],
+    "⭐ 军官序列": ["boss","captain","chairman","coach","cook","dentist","director","doctor","driver","engineer","farmer","fisherman","guard","king","leader","manager","monitor","nurse","pilot","police","policeman","postman","president","pupil","queen","scientist","servant","secretary","soldier","speaker","student","teacher","worker"],
+    "🏕 营地装备": ["basket","bed","box","bottle","brush","chair","can","candle","clock","cover","desk","drawer","furniture","handbag","iron","key","lamp","lock","mirror","photo","picture","rope","rubbish","safe","shelf","shower","soap","sofa","stick","table","thing","thread","toothbrush","toothpaste","towel","umbrella","watch","camera","CD","computer","DVD","fan","fridge","keyboard","light","machine","phone","radio","recorder","screen","tape","TV","VCD","video"],
+    "🔧 战术工具": ["bag","ball","balloon","card","chess","crayon","diary","dictionary","doll","eraser","gift","gun","ink","kite","notebook","paper","pen","pencil","postcard","ruler","schoolbag","stamp","toy","tool"],
+    "📚 训练基地": ["bell","blackboard","chalk","class","classroom","group","lab","lesson","office","playground","row","school","seat","activity","art","chemistry","course","geography","history","math","music","P.E.","physics","science","subject","accent","answer","composition","conversation","difficulty","discussion","exam","example","fact","form","grade","grammar","handwriting","homework","knowledge","language","letter","meaning","method","mistake","note","point","practice","progress","pronunciation","question","reply","research","review","rule","score","search","sentence","speech","summary","term","test","title","topic","underline","unit","word"],
+    "🪖 作战服饰": ["clothes","coat","dress","jacket","jeans","overcoat","raincoat","shirt","shorts","skirt","sock","sweater","T-shirt","trousers","cap","glove","hat","pocket","purse","ring","scarf","shoe","tie","colour","black","blue","brown","green","orange","pink","red","white","yellow"],
+    "🪖 野战口粮": ["apple","banana","beef","biscuit","bread","butter","cabbage","cake","candy","cheese","chicken","chocolate","dumpling","egg","food","fruit","grape","ham","hamburger","lamb","meat","noodle","oil","orange","pancake","pear","pie","pork","potato","rice","salad","salt","sandwich","sausage","strawberry","sugar","sweet","tomato","vegetable","watermelon","coffee","coke","drink","ice-cream","juice","lemonade","milk","soup","tea","water","wine"],
+    "🐺 战区生物": ["animal","ant","bear","camel","cat","cow","dog","elephant","fox","frog","giraffe","goat","horse","lamb","lion","monkey","mouse","pet","pig","panda","rabbit","rat","sheep","snake","tiger","wolf","zebra","bee","bird","butterfly","chicken","duck","fish","fly","goose","hen","whale","wing","bamboo","cotton","flower","grass","leaf","plant","rose","tree","wheat"],
+    "🗺 战略地图": ["bank","capital","church","city","cinema","college","factory","fair","farm","hospital","hotel","library","market","museum","park","airport","bridge","bus","car","train","plane","taxi","ship","station","street","traffic","way","airplane","bicycle","motorcycle","underground","beach","map","travel","trip"]
+};
+
+// 完整中文释义库
+const fullMeaningDict = {
+    "aunt":"姨母；姑母；伯母","brother":"兄；弟","cousin":"堂(表)兄弟姐妹","couple":"夫妇","dad":"爸爸","daughter":"女儿","family":"家庭；家人","father":"父亲","grandchild":"孙子/孙女","granddaughter":"孙女","grandfather":"祖父；外祖父","grandma":"奶奶；外婆","grandmother":"祖母；外祖母","grandpa":"爷爷；外公","grandparent":"祖父母","grandson":"孙子","granny":"老奶奶","husband":"丈夫","mom":"妈妈","mother":"母亲","parent":"父母","relation":"亲属关系","sister":"姐；妹","son":"儿子","uncle":"叔叔；舅舅","wife":"妻子","adult":"成年人","baby":"婴儿","boy":"男孩","child":"孩子","classmate":"同班同学","elder":"长辈","enemy":"敌人","friend":"朋友","gentleman":"绅士","girl":"女孩","guest":"客人","hero":"英雄","human":"人类","kid":"小孩","lady":"女士","madam":"夫人","man":"成年男人","member":"成员","Miss":"小姐","Mr.":"先生","Mrs.":"夫人","neighbor":"邻居","nobody":"渺小人物","officer":"军官；警官","owner":"所有者","patient":"病人","person":"人","pioneer":"先锋","passenger":"乘客","people":"人们","prisoner":"囚犯","public":"公众","sir":"先生","stranger":"陌生人","teenager":"青少年","tourist":"游客","visitor":"访问者","volunteer":"志愿者","winner":"获胜者","woman":"女人",
+    "boss":"老板","captain":"船长；队长","chairman":"主席","coach":"教练","cook":"厨师","dentist":"牙医","director":"主管；负责人","doctor":"医生","driver":"驾驶员；司机","engineer":"工程师","farmer":"农民","fisherman":"渔夫","guard":"卫兵","king":"国王","leader":"领导者","manager":"经理","monitor":"班长","nurse":"护士","pilot":"飞行员","police":"警察","policeman":"男警察","postman":"邮递员","president":"总统；校长","pupil":"小学生","queen":"女王","scientist":"科学家","servant":"仆人","secretary":"秘书","soldier":"士兵","speaker":"演讲者","student":"学生","teacher":"教师","worker":"工人",
+    "basket":"篮子","bed":"床","box":"盒子；箱子","bottle":"瓶子","brush":"刷子","chair":"椅子","can":"罐头","candle":"蜡烛","clock":"钟","cover":"盖子","desk":"书桌","drawer":"抽屉","furniture":"家具","handbag":"手提包","iron":"熨斗","key":"钥匙","lamp":"灯","lock":"锁","mirror":"镜子","photo":"照片","picture":"图片；画","rope":"绳索","rubbish":"垃圾","safe":"保险箱","shelf":"架子","shower":"淋浴","soap":"肥皂","sofa":"沙发","stick":"棍子","table":"桌子","thing":"东西；事物","thread":"线","toothbrush":"牙刷","toothpaste":"牙膏","towel":"毛巾","umbrella":"雨伞","watch":"手表","camera":"照相机","CD":"光盘","computer":"电脑","DVD":"影碟","fan":"风扇","fridge":"冰箱","keyboard":"键盘","light":"灯；灯光","machine":"机器","phone":"电话","radio":"收音机","recorder":"录音机","screen":"屏幕","tape":"磁带","TV":"电视机","VCD":"影碟机","video":"录像",
+    "bag":"书包；提包","ball":"球","balloon":"气球","card":"卡片","chess":"国际象棋","crayon":"蜡笔","diary":"日记本","dictionary":"字典","doll":"玩偶","eraser":"橡皮","gift":"礼物","gun":"枪","ink":"墨水","kite":"风筝","notebook":"笔记本","paper":"纸","pen":"钢笔","pencil":"铅笔","postcard":"明信片","ruler":"尺子","schoolbag":"书包","stamp":"邮票","toy":"玩具","tool":"工具",
+    "bell":"铃铛","blackboard":"黑板","chalk":"粉笔","class":"班级","classroom":"教室","group":"小组","lab":"实验室","lesson":"课","office":"办公室","playground":"操场","row":"一排","school":"学校","seat":"座位","activity":"活动","art":"美术；艺术","chemistry":"化学","course":"课程","geography":"地理","history":"历史","math":"数学","music":"音乐","P.E.":"体育","physics":"物理","science":"科学","subject":"学科","accent":"口音","answer":"回答","composition":"作文","conversation":"对话","difficulty":"困难","discussion":"讨论","exam":"考试","example":"例子","fact":"事实","form":"表格","grade":"年级；分数","grammar":"语法","handwriting":"笔迹","homework":"家庭作业","knowledge":"知识","language":"语言","letter":"字母","meaning":"意思","method":"方法","mistake":"错误","note":"笔记","point":"要点","practice":"练习","progress":"进步","pronunciation":"发音","question":"问题","reply":"回复","research":"研究","review":"复习","rule":"规则","score":"得分","search":"搜索","sentence":"句子","speech":"演讲","summary":"摘要","term":"学期","test":"测验","title":"标题","topic":"话题","underline":"下划线","unit":"单元","word":"单词",
+    "clothes":"衣服","coat":"外套","dress":"连衣裙","jacket":"夹克衫","jeans":"牛仔裤","overcoat":"大衣","raincoat":"雨衣","shirt":"衬衫","shorts":"短裤","skirt":"裙子","sock":"短袜","sweater":"毛衣","T-shirt":"T恤衫","trousers":"裤子","cap":"帽子","glove":"手套","hat":"礼帽","pocket":"口袋","purse":"钱包","ring":"戒指","scarf":"围巾","shoe":"鞋","tie":"领带","colour":"颜色","black":"黑色","blue":"蓝色","brown":"棕色","green":"绿色","orange":"橙色","pink":"粉红色","red":"红色","white":"白色","yellow":"黄色",
+    "apple":"苹果","banana":"香蕉","beef":"牛肉","biscuit":"饼干","bread":"面包","butter":"黄油","cabbage":"卷心菜","cake":"蛋糕","candy":"糖果","cheese":"奶酪","chicken":"鸡肉","chocolate":"巧克力","dumpling":"饺子","egg":"鸡蛋","food":"食物","fruit":"水果","grape":"葡萄","ham":"火腿","hamburger":"汉堡包","lamb":"羊肉","meat":"肉","noodle":"面条","oil":"油","orange":"橙子","pancake":"薄煎饼","pear":"梨","pie":"馅饼","pork":"猪肉","potato":"土豆","rice":"米饭","salad":"沙拉","salt":"盐","sandwich":"三明治","sausage":"香肠","strawberry":"草莓","sugar":"糖","sweet":"甜食；糖果","tomato":"西红柿","vegetable":"蔬菜","watermelon":"西瓜","coffee":"咖啡","coke":"可乐","drink":"饮料","ice-cream":"冰淇淋","juice":"果汁","lemonade":"柠檬水","milk":"牛奶","soup":"汤","tea":"茶","water":"水","wine":"葡萄酒",
+    "animal":"动物","ant":"蚂蚁","bear":"熊","camel":"骆驼","cat":"猫","cow":"母牛","dog":"狗","elephant":"大象","fox":"狐狸","frog":"青蛙","giraffe":"长颈鹿","goat":"山羊","horse":"马","lamb":"羔羊","lion":"狮子","monkey":"猴子","mouse":"老鼠","pet":"宠物","pig":"猪","panda":"熊猫","rabbit":"兔子","rat":"老鼠","sheep":"绵羊","snake":"蛇","tiger":"老虎","wolf":"狼","zebra":"斑马","bee":"蜜蜂","bird":"鸟","butterfly":"蝴蝶","chicken":"鸡","duck":"鸭","fish":"鱼","fly":"苍蝇","goose":"鹅","hen":"母鸡","whale":"鲸鱼","wing":"翅膀","bamboo":"竹子","cotton":"棉花","flower":"花","grass":"草","leaf":"叶子","plant":"植物","rose":"玫瑰","tree":"树","wheat":"小麦",
+    "bank":"银行","capital":"首都","church":"教堂","city":"城市","cinema":"电影院","college":"大学","factory":"工厂","fair":"集市","farm":"农场","hospital":"医院","hotel":"旅馆","library":"图书馆","market":"市场","museum":"博物馆","park":"公园","airport":"机场","bridge":"桥","bus":"公共汽车","car":"小汽车","train":"火车","plane":"飞机","taxi":"出租车","ship":"船","station":"车站","street":"街道","traffic":"交通","way":"道路","airplane":"飞机","bicycle":"自行车","motorcycle":"摩托车","underground":"地铁","beach":"海滩","map":"地图","travel":"旅行","trip":"短途旅行"
+};
+
+// 构建单词库
+let wordBank = [];
+for (let [category, words] of Object.entries(categoriesData)) {
+    for (let w of words) {
+        let meaning = fullMeaningDict[w];
+        if (!meaning) meaning = w;
+        wordBank.push({ word: w, meaning: meaning, category: category });
+    }
+}
+const uniqueBank = [];
+const seen = new Set();
+for (let w of wordBank) {
+    if (!seen.has(w.word)) {
+        seen.add(w.word);
+        uniqueBank.push(w);
+    }
+}
+
+// 当前状态
+let currentCategory = "👥 人员编制";
+let currentMode = "browse";
+let challengeState = null;
+
+// 更新战术时钟
+function updateTacClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('tacClock').textContent = `COMSTAT ${h}${m}${s} ZULU`;
+}
+setInterval(updateTacClock, 1000);
+updateTacClock();
+
+// 获取当前分类单词
+function getWordsByCategory(limit = 30) {
+    let filtered = uniqueBank.filter(w => w.category === currentCategory);
+    if (filtered.length === 0) filtered = uniqueBank.slice(0, 30);
+    let shuffled = [...filtered];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, limit);
+}
+
+// 短语生成
+function generatePhrase(wordObj) {
+    const w = wordObj.word;
+    const meaning = wordObj.meaning;
+    const commonPhrases = {
+        "apple": ["fresh apple", "新鲜的苹果"], "cat": ["black cat", "黑猫"], "dog": ["guard dog", "警卫犬"],
+        "car": ["red car", "红色汽车"], "teacher": ["head teacher", "主任教官"], "friend": ["best friend", "最佳战友"],
+        "mother": ["kind mother", "慈祥的母亲"], "father": ["brave father", "勇敢的父亲"],
+        "school": ["training camp", "训练营"], "bird": ["scout bird", "侦察鸟"]
+    };
+    if (commonPhrases[w]) return { en: commonPhrases[w][0], zh: commonPhrases[w][1] };
+    let adj = "tactical", adjZh = "战术的";
+    if (meaning.includes("红")) { adj = "red"; adjZh = "红色的"; }
+    else if (meaning.includes("蓝")) { adj = "blue"; adjZh = "蓝色的"; }
+    else if (meaning.includes("大")) { adj = "heavy"; adjZh = "重型"; }
+    else if (meaning.includes("快")) { adj = "rapid"; adjZh = "快速的"; }
+    return { en: `${adj} ${w}`, zh: `${adjZh}${meaning}` };
+}
+
+// 句子生成
+function generateSentence(wordObj) {
+    const w = wordObj.word;
+    const meaning = wordObj.meaning;
+    const templates = [
+        { en: `Deploy the ${w} now.`, zh: `立即部署${meaning}。` },
+        { en: `The ${w} is operational.`, zh: `${meaning}已进入作战状态。` },
+        { en: `Report on the ${w}.`, zh: `汇报${meaning}情况。` },
+        { en: `Secure the ${w}, soldier.`, zh: `保护${meaning}，士兵。` }
+    ];
+    return templates[Math.floor(Math.random() * templates.length)];
+}
+
+// 构建挑战题目
+function buildChallengeQuestions(level, limit = 5) {
+    const wordPool = getWordsByCategory(20);
+    if (wordPool.length < 3) return [];
+    const shuffled = [...wordPool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const selected = [];
+    for (let i = 0; i < Math.min(limit, shuffled.length); i++) {
+        const wObj = shuffled[i];
+        if (level === 1) {
+            let opts = [wObj.word];
+            let others = uniqueBank.filter(ow => ow.word !== wObj.word && ow.category !== wObj.category).slice(0, 3);
+            if (others.length < 3) others = uniqueBank.filter(ow => ow.word !== wObj.word).slice(0, 3);
+            let optWords = opts.concat(others.map(o => o.word));
+            optWords.sort(() => Math.random() - 0.5);
+            selected.push({ type: 1, wordObj: wObj, questionText: wObj.meaning, options: optWords, correctAnswer: wObj.word });
+        } else if (level === 2) {
+            selected.push({ type: 2, wordObj: wObj, correctAnswer: wObj.word.toLowerCase() });
+        } else if (level === 3) {
+            selected.push({ type: 3, wordObj: wObj, targetWord: wObj.word });
+        } else if (level === 4) {
+            const phrase = generatePhrase(wObj);
+            let wrongs = ["美丽的风景", "快速的车辆", "重型装备", "隐蔽行动"];
+            let options = [phrase.zh, ...wrongs.slice(0, 2)];
+            options = options.slice(0, 3);
+            if (!options.includes(phrase.zh)) options[0] = phrase.zh;
+            options.sort(() => Math.random() - 0.5);
+            selected.push({ type: 4, wordObj: wObj, questionText: phrase.en, options: options, correctAnswer: phrase.zh });
+        } else if (level === 5) {
+            const sentence = generateSentence(wObj);
+            let wrongs = ["这是好的", "我喜欢它", "看那边", "他很好"];
+            let options = [sentence.zh, ...wrongs.slice(0, 2)];
+            options = options.slice(0, 3);
+            if (!options.includes(sentence.zh)) options[0] = sentence.zh;
+            options.sort(() => Math.random() - 0.5);
+            selected.push({ type: 5, wordObj: wObj, questionText: sentence.en, options: options, correctAnswer: sentence.zh });
+        }
+    }
+    return selected;
+}
+
+const levelNames = {
+    1: '新兵训练',
+    2: '通讯破译',
+    3: '语音侦察',
+    4: '密码翻译',
+    5: '战术指令'
+};
+
+function initChallenge(level) {
+    const questions = buildChallengeQuestions(level, 5);
+    if (questions.length === 0) {
+        document.getElementById("dynamicContent").innerHTML = `<div class="ops-panel"><div class="mission-board"><p style="font-family:var(--font-tactical);color:var(--text-secondary);letter-spacing:2px;">⚠ 情报不足，切换目标分类</p></div></div>`;
+        return;
+    }
+    challengeState = {
+        questions: questions,
+        currentIndex: 0,
+        score: 0,
+        answered: false,
+        total: questions.length,
+        level: level
+    };
+    renderChallengeQuestion();
+}
+
+function renderChallengeQuestion() {
+    if (!challengeState || challengeState.currentIndex >= challengeState.questions.length) {
+        const score = challengeState?.score || 0;
+        const total = challengeState?.total || 0;
+        const pct = total > 0 ? score / total : 0;
+        let rank = '新兵';
+        if (pct >= 1) rank = '⚡ 特种兵';
+        else if (pct >= 0.8) rank = '🎖 上尉';
+        else if (pct >= 0.6) rank = '🎖 中尉';
+        else if (pct >= 0.4) rank = '🎖 少尉';
+        else if (pct >= 0.2) rank = '🎖 下士';
+        const finalHtml = `<div class="ops-panel"><div class="mission-complete">
+            <div class="rank-icon">${pct >= 0.8 ? '🏆' : pct >= 0.4 ? '🎖' : '⚔'}</div>
+            <h2>任务完成 — ${rank}</h2>
+            <div class="score-display">战绩: ${score} / ${total}</div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <button class="action-btn" id="restartChallengeBtn">🔄 重新部署</button>
+                <button class="action-btn" id="levelSelectBtn">📋 选择任务</button>
+            </div>
+        </div></div>`;
+        document.getElementById("dynamicContent").innerHTML = finalHtml;
+        document.getElementById("restartChallengeBtn")?.addEventListener("click", () => initChallenge(challengeState.level));
+        document.getElementById("levelSelectBtn")?.addEventListener("click", () => renderChallengeModeSelector());
+        return;
+    }
+    const q = challengeState.questions[challengeState.currentIndex];
+    let html = `<div class="ops-panel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+            <span class="score-area">⭐ 战绩: ${challengeState.score}/${challengeState.total}</span>
+            <span class="score-area">任务 ${challengeState.currentIndex+1}/${challengeState.total} | ${levelNames[challengeState.level]}</span>
+        </div>
+        <div class="mission-board">
+            <div class="mission-title">▸ 当前任务</div>`;
+
+    if (q.type === 1) {
+        html += `<div class="question-text">🎯 ${q.questionText}</div>
+                <div class="mission-title">选择正确单词</div>
+                <div class="options-area" id="optionsArea">${q.options.map(opt => `<button class="option-btn" data-val="${opt}">${opt}</button>`).join('')}</div>`;
+    } else if (q.type === 2) {
+        html += `<div class="question-text">📻 通讯监听 <button class="action-btn" id="playAudioBtn" style="margin-left:14px; font-size:0.8rem;">▶ 播放信号</button></div>
+                <div class="mission-title">输入截获的单词</div>
+                <div class="input-area"><input type="text" id="spellInput" placeholder="输入英文单词..." class="answer-input"><button id="submitSpellBtn" class="action-btn">✓ 确认破译</button></div>`;
+    } else if (q.type === 3) {
+        html += `<div class="question-text">🎙 语音侦察: <strong style="font-size:2rem;color:var(--brass-light);">${q.targetWord}</strong></div>
+                <div class="mission-title">大声朗读该单词</div>
+                <div class="input-area"><button id="recordBtn" class="action-btn record-btn">🎙 开始侦察</button></div>
+                <div id="recordStatus" style="font-family:var(--font-tactical);font-size:0.8rem;color:var(--text-secondary);letter-spacing:2px;">需要麦克风权限 | MIC REQUIRED</div>`;
+    } else if (q.type === 4) {
+        html += `<div class="question-text">🔐 密码破译: <em>"${q.questionText}"</em></div>
+                <div class="mission-title">选择正确译文</div>
+                <div class="options-area" id="optionsArea">${q.options.map(opt => `<button class="option-btn" data-val="${opt}">${opt}</button>`).join('')}</div>`;
+    } else if (q.type === 5) {
+        html += `<div class="question-text">📜 指令翻译: <em>"${q.questionText}"</em></div>
+                <div class="mission-title">选择正确译文</div>
+                <div class="options-area" id="optionsArea">${q.options.map(opt => `<button class="option-btn" data-val="${opt}">${opt}</button>`).join('')}</div>`;
+    }
+    html += `<div class="feedback" id="feedbackMsg"></div>
+            <div class="input-area">
+                <button id="nextQBtn" class="action-btn">下一任务 ▸</button>
+                <button id="resetChallengeBtn" class="action-btn">🔄 重置任务</button>
+            </div></div></div>`;
+    document.getElementById("dynamicContent").innerHTML = html;
+
+    // 选择题处理
+    if (q.type === 1 || q.type === 4 || q.type === 5) {
+        const opts = document.querySelectorAll(".option-btn");
+        opts.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (challengeState.answered) return;
+                const selected = btn.dataset.val;
+                const isCorrect = (selected === q.correctAnswer);
+                const fb = document.getElementById("feedbackMsg");
+                if (isCorrect) { challengeState.score++; fb.innerHTML = "✅ 命中目标！战绩 +1"; fb.style.color = '#7ec87e'; }
+                else { fb.innerHTML = `❌ 偏离目标！正确: ${q.correctAnswer}`; fb.style.color = '#e74c3c'; }
+                challengeState.answered = true;
+                opts.forEach(b => { b.style.pointerEvents = "none"; b.style.opacity = "0.5"; });
+            });
+        });
+    } else if (q.type === 2) {
+        const playBtn = document.getElementById("playAudioBtn");
+        if (playBtn) playBtn.onclick = () => { const utter = new SpeechSynthesisUtterance(q.wordObj.word); utter.lang = 'en-US'; speechSynthesis.cancel(); speechSynthesis.speak(utter); };
+        const submitBtn = document.getElementById("submitSpellBtn");
+        submitBtn.onclick = () => {
+            if (challengeState.answered) return;
+            const inputVal = document.getElementById("spellInput").value.trim().toLowerCase();
+            const correct = q.correctAnswer.toLowerCase();
+            const fb = document.getElementById("feedbackMsg");
+            if (inputVal === correct) { challengeState.score++; fb.innerHTML = "🎉 破译成功！战绩 +1"; fb.style.color = '#7ec87e'; }
+            else { fb.innerHTML = `❌ 破译失败，正确信号: ${correct}`; fb.style.color = '#e74c3c'; }
+            challengeState.answered = true;
+            submitBtn.disabled = true;
+        };
+    } else if (q.type === 3) {
+        const recordBtn = document.getElementById("recordBtn");
+        const statusDiv = document.getElementById("recordStatus");
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recordBtn.onclick = () => {
+                if (challengeState.answered) { statusDiv.innerText = "本任务已完成，进入下一任务"; return; }
+                statusDiv.innerText = "🎙 侦察中... 说出目标单词";
+                recognition.start();
+            };
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.trim().toLowerCase();
+                const target = q.targetWord.toLowerCase();
+                statusDiv.innerText = `信号识别: "${transcript}"`;
+                let scorePercent = 0;
+                if (transcript === target) scorePercent = 100;
+                else if (transcript.includes(target) || target.includes(transcript)) scorePercent = 70;
+                else if (Math.abs(transcript.length - target.length) <= 2) scorePercent = 50;
+                else scorePercent = 20;
+                const earned = Math.floor(scorePercent / 20);
+                if (earned > 0) challengeState.score += earned;
+                const fb = document.getElementById("feedbackMsg");
+                fb.innerHTML = `🏅 侦察得分: ${scorePercent}分 获得 ${earned} 战绩积分！`;
+                fb.style.color = scorePercent >= 70 ? '#7ec87e' : '#e74c3c';
+                challengeState.answered = true;
+                recordBtn.disabled = true;
+            };
+            recognition.onerror = () => { statusDiv.innerText = "侦察失败，检查通讯设备"; };
+        } else {
+            statusDiv.innerText = "设备不支持语音侦察 — 模拟模式";
+            recordBtn.onclick = () => {
+                if (challengeState.answered) return;
+                challengeState.score += 1;
+                document.getElementById("feedbackMsg").innerHTML = "🎤 模拟侦察 +1战绩";
+                document.getElementById("feedbackMsg").style.color = '#7ec87e';
+                challengeState.answered = true;
+            };
+        }
+    }
+
+    const nextBtn = document.getElementById("nextQBtn");
+    nextBtn.onclick = () => {
+        if (!challengeState.answered) { const fb = document.getElementById("feedbackMsg"); fb.innerHTML = "⚠ 请先完成当前任务！"; fb.style.color = '#f39c12'; return; }
+        challengeState.currentIndex++;
+        challengeState.answered = false;
+        renderChallengeQuestion();
+    };
+    const resetBtn = document.getElementById("resetChallengeBtn");
+    if (resetBtn) resetBtn.onclick = () => initChallenge(challengeState.level);
+}
+
+function renderChallengeModeSelector() {
+    const levelHtml = `<div class="ops-panel">
+        <div class="mission-board">
+            <h2 style="font-family:var(--font-tactical);color:var(--brass-light);letter-spacing:4px;font-size:1.3rem;">⚡ 选择作战任务 ⚡</h2>
+            <div class="mission-title" style="margin:12px 0;">MISSION SELECT</div>
+            <div class="level-buttons">
+                <button class="level-btn" data-lvl="1">1⃣ 新兵训练 · 汉译英</button>
+                <button class="level-btn" data-lvl="2">2⃣ 通讯破译 · 听写</button>
+                <button class="level-btn" data-lvl="3">3⃣ 语音侦察 · 发音</button>
+                <button class="level-btn" data-lvl="4">4⃣ 密码翻译 · 短语</button>
+                <button class="level-btn" data-lvl="5">5⃣ 战术指令 · 句子</button>
+            </div>
+            <p style="font-family:var(--font-tactical);font-size:0.8rem;color:var(--text-secondary);letter-spacing:2px;margin-top:16px;">📡 当前情报: ${currentCategory} | 所有任务均使用真实情报数据</p>
+        </div>
+    </div>`;
+    document.getElementById("dynamicContent").innerHTML = levelHtml;
+    document.querySelectorAll(".level-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const lvl = parseInt(btn.dataset.lvl);
+            initChallenge(lvl);
+        });
+    });
+}
+
+// 单词卡片模式（情报阅览）
+function renderBrowseMode() {
+    const words = uniqueBank.filter(w => w.category === currentCategory);
+    if (words.length === 0) {
+        document.getElementById("dynamicContent").innerHTML = '<div class="ops-panel"><div class="mission-board"><p style="font-family:var(--font-tactical);color:var(--text-secondary);letter-spacing:2px;">情报为空</p></div></div>';
+        return;
+    }
+    let cardHtml = `<div class="word-grid">`;
+    words.forEach((w, idx) => {
+        cardHtml += `<div class="word-card" data-word="${w.word}">
+                        <div class="tac-code">INTEL-${String(idx+1).padStart(3,'0')}</div>
+                        <div class="en">${w.word}</div>
+                        <div class="zh">${w.meaning}</div>
+                        <div class="comms">📡 点击通讯</div>
+                    </div>`;
+    });
+    cardHtml += `</div>`;
+    document.getElementById("dynamicContent").innerHTML = cardHtml;
+    document.querySelectorAll(".word-card").forEach(card => {
+        card.addEventListener("click", (e) => {
+            const word = card.dataset.word;
+            if (word && window.speechSynthesis) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = "en-US";
+                utterance.rate = 0.75;
+                speechSynthesis.cancel();
+                speechSynthesis.speak(utterance);
+            }
+        });
+    });
+}
+
+// 分类侧栏渲染
+function renderCategories() {
+    const catNames = Object.keys(categoriesData);
+    const container = document.getElementById("categoryList");
+    container.innerHTML = catNames.map(cat => `
+        <div class="cat-item ${currentCategory === cat ? 'active' : ''}" data-cat="${cat}">
+            <span>${cat}</span>
+            <span class="count-badge">${categoriesData[cat].length}</span>
+        </div>`).join("");
+    document.querySelectorAll(".cat-item").forEach(el => {
+        el.addEventListener("click", () => {
+            currentCategory = el.dataset.cat;
+            renderCategories();
+            if (currentMode === "browse") renderBrowseMode();
+            else if (currentMode === "challenge") renderChallengeModeSelector();
+        });
+    });
+}
+
+function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll(".mode-btn").forEach(btn => {
+        if (btn.dataset.mode === mode) btn.classList.add("active");
+        else btn.classList.remove("active");
+    });
+    if (mode === "browse") renderBrowseMode();
+    else if (mode === "challenge") renderChallengeModeSelector();
+}
+
+// 启动
+renderCategories();
+renderBrowseMode();
+document.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => switchMode(btn.dataset.mode));
+});
+
+// 键盘快捷键
+document.addEventListener('keydown', (e) => {
+    if (e.key === '1' && currentMode === 'challenge' && !challengeState) initChallenge(1);
+    if (e.key === '2' && currentMode === 'challenge' && !challengeState) initChallenge(2);
+    if (e.key === '3' && currentMode === 'challenge' && !challengeState) initChallenge(3);
+    if (e.key === '4' && currentMode === 'challenge' && !challengeState) initChallenge(4);
+    if (e.key === '5' && currentMode === 'challenge' && !challengeState) initChallenge(5);
+    if (e.key === 'b') switchMode('browse');
+    if (e.key === 'c') switchMode('challenge');
+});
+</script>
+</body>
+</html>
